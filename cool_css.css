@@ -1,0 +1,459 @@
+  :root {
+   /* background color */
+   --bg-alpha:          1;
+   --bg-r:              0;
+   --bg-g:              0;
+   --bg-b:              0;
+   --bg:                rgb(var(--bg-r), var(--bg-b), var(--bg-g));
+
+   /* header color */
+   --header-alpha:      1;
+   --header-g:          190;
+   --header-r:          190;
+   --header-b:          190;
+   --header:            rgb(var(--header-r), var(--header-g), var(--header-b));
+   --header-brightness:  .6;
+
+   /* pop color */
+   --pop-alpha:         1;
+   --pop-r:             100;
+   --pop-g:             231;
+   --pop-b:             255;
+   --pop:               rgb(var(--pop-r), var(--pop-g), var(--pop-b));
+
+   /* shadow color */
+   --shadow-alpha:      .8;
+   --shadow-r:          0;
+   --shadow-g:          10;
+   --shadow-b:          10;
+   --shadow:            rgb(var(--shadow-r), var(--shadow-g), var(--shadow-b));
+
+   /* background gradient */
+   --gradient-color1:   rgba(10, 10, 10, 1);
+   --gradient-c1-amt:   20%;
+   --gradient-color2:   rgba(12, 16, 29, .6);
+   --gradient-c2-amt:   100%;
+   --gradient-x:        -111.8%;
+   --gradient-y:        -10.3%;
+
+   /* Fonts */
+   --font1-family:      'Source Code Pro', monospace;
+   --font2-family:      'Source Sans Pro', sans-serif;
+   --font-size:          20px;
+   --letter-spacing-f1:  2px;
+   --letter-spacing-f2:  2px;
+   --line-height:        30px;
+
+   /* Font size scale multipliers */
+   --h1-multiplier:     2;
+   --h2-multiplier:     1.5;
+   --h3-multiplier:     1.2;
+   --list-multiplier:   1.2;
+   --link-multiplier:   1;
+
+  /* Borders */
+  --border-color:      rgba(0,0,0,1);
+  --border-thickness:  1%;
+  --border-radius:     1%;
+
+  /* Shadows */
+  --shadow-x-max:      .3;
+  --shadow-y-max:      1;
+  --shadow-radius:     15px;
+  --brightness:        90%;
+
+  /* 3d movement */
+  --text-y:       -2px;
+  --text-x:       -5px;
+  --text-z:       -0px;
+
+  /* padding  */
+  --gloabl-padding:    10px;
+  --header-padding:    2;
+  --list-padding:      .5;
+  --list-decorator:    "> ";
+  --margins:            2%;
+}
+body {
+    padding: var(--gloabl-padding);
+    background: radial-gradient(circle farthest-corner at var(--gradient-x) var(--gradient-y), var(--gradient-color1) var(--gradient-c1-amt), var(--gradient-color2) var(--gradient-c2-amt));
+    background-color: rgba(var(--bg), var(--bg-alpha));
+    font-size: var(--font-size);
+    margin-top: var(--margin);
+    margin-bottom: var(--margin);
+    margin-right: var(--margin);
+    margin-left: var(--margin);
+ }
+p {
+    border: var(--border-thickness) solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-family: var(--font2-family);
+    text-indent: 0%;
+    text-align: justify;
+    text-justify: inter-word;
+    line-height: var(--line-height);
+    letter-spacing: var(--letter-spacing-f1);
+    padding: var(--gloabl-padding);
+ }
+h1 {
+    font-size: calc(var(--font-size) * var(--h1-multiplier));
+    text-align: center;
+ }
+h2 {
+    font-size: calc(var(--font-size) * var(--h2-multiplier));
+    padding: calc(var(--gloabl-padding) * var(--header-padding));
+ }
+h3 {
+    font-size: calc(var(--font-size) * var(--h3-multiplier));
+    padding: calc(var(--gloabl-padding) * var(--header-padding));
+ }
+ul {
+    color: rgba(var(--pop) var(--pop-alpha));
+    font-size: calc(var(--font-size) * var(--list-multiplier));
+    padding: calc(var(--gloabl-padding) * var(--list-padding));
+    font-family: var(--font2-family);
+    line-height: var(--line-height);
+    letter-spacing: var(--letter-spacing-f1);
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    justify-content: inter-item;
+    list-style-type: var(--list-decorator);
+    list-style-position: inside;
+ }
+ol {
+    color: rgba(var(--pop) var(--pop-alpha));
+    padding: calc(var(--gloabl-padding) * var(--list-padding));
+    list-style-type: numeric;
+    font-family: var(--font2-family);
+    font-size: calc(var(--font-size) * var(--list-multiplier));
+    line-height: var(--line-height);
+    letter-spacing: var(--letter-spacing-f2);
+    list-style-type: var(--list-decorator);
+    list-style-position: inside;
+ }
+li {
+    color: rgba(var(--header) var(--header-alpha));
+    font-size: var(--font-size);
+    text-indent: 1%;
+    line-height: var(--line-height);
+    letter-spacing: var(--letter-spacing-f1);
+    background-color: rgba(0,0,0,0);
+ }
+emp {
+    line-height: var(--line-height);
+    letter-spacing: var(--letter-spacing-f1);
+    text-align: justify;
+    text-justify: inter-word;
+    font-size: calc(var(--font-size) * var(--list-multiplier));
+    font-family: var(--font2-family);
+ }
+a:link {
+    color: rgba(var(--pop) var(--pop-alpha));
+    text-decoration: none;
+    font-family: var(--font1-family);
+    font-size: calc(var(--font-size) * var(--link-multiplier));
+ }
+.flex-container {
+    font-family: var(--font2-family);
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    justify-content: inter-item;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle farthest-corner at var(--gradient-x) var(--gradient-y), var(--gradient-color1) var(--gradient-c1-amt), var(--gradient-color2) var(--gradient-c2-amt));
+    background-color: rgba(var(--bg), var(--bg-alpha));
+    background-size: 100% 100%;
+    animation: fadein 2s linear 1 forwards;
+    border-color: var(--border-radius);
+    border-radius: var(--border-radius);
+    text-align: left;
+    overflow: auto;
+    padding: var(--gloabl-padding);
+ }
+ html, body, svg, foreignObject {
+    height: 99%;
+    width: 99%;
+  }
+ h1, h2, h3 {
+    color: rgba(var(--header-r), var(--header-g), var(--header-b), var(--header-alpha));
+    padding: calc(var(--gloabl-padding) * var(--header-padding));
+    font-family: var(--font1-family);
+ }
+  a:link {
+    text-underline-offset: 20%;
+    color: rgba(var(--pop-r), var(--pop-g), var(--pop-b), var(--pop-alpha));
+    font-family: var(--font1-family);
+    text-shadow:
+    calc(var(--shadow-x-max) * 8px) calc(var(--shadow-y-max) * 8px) 0 rgba(calc(var(--shadow-r) * .9), calc(var(--shadow-g) * .9), calc(var(--shadow-b) * .9), calc(var(--shadow-alpha))),
+    calc(var(--shadow-x-max) * 9px) calc(var(--shadow-y-max) * 9px) var(--shadow-radius) rgba(var(--shadow-r), var(--shadow-g), var(--shadow-b), var(--shadow-alpha));
+    var(--line-height);
+    letter-spacing: var(--letter-spacing-f1);
+    filter: brightness(var(--brightness));
+ }
+  a:hover, emph {
+    top: var(--text-y);
+    color: rgba(var(--pop-r), var(--pop-g), var(--pop-b), 0);
+    font-size: calc(--font-size) + 1vh);
+    text-shadow:
+    calc(var(--shadow-x-max) * 1px) calc(var(--shadow-y-max) * 1px) 0 rgba(calc(var(--pop-r) * .9), calc(var(--pop-g) * .9), calc(var(--pop-b) * .9), calc(var(--pop-alpha) / 1 )),
+    calc(var(--shadow-x-max) * 2px) calc(var(--shadow-y-max) * 2px) 0 rgba(calc(var(--pop-r) * .9), calc(var(--pop-g) * .9), calc(var(--pop-b) * .9), calc(var(--pop-alpha) / 1.2)),
+    calc(var(--shadow-x-max) * 3px) calc(var(--shadow-y-max) * 3px) 0 rgba(calc(var(--pop-r) * .8), calc(var(--pop-g) * .8), calc(var(--pop-b) * .8), calc(var(--pop-alpha) / 1.3)),
+    calc(var(--shadow-x-max) * 4px) calc(var(--shadow-y-max) * 4px) 0 rgba(calc(var(--pop-r) * .8), calc(var(--pop-g) * .8), calc(var(--pop-b) * .8), calc(var(--pop-alpha) / 1.4)),
+    calc(var(--shadow-x-max) * 8px) calc(var(--shadow-y-max) * 8px) 0 rgba(calc(var(--shadow-r) * .9), calc(var(--shadow-g) * .9), calc(var(--shadow-b) * .9), calc(var(--shadow-alpha))),
+    calc(var(--shadow-x-max) * 9px) calc(var(--shadow-y-max) * 9px) var(--shadow-radius) rgba(var(--shadow-r), var(--shadow-g), var(--shadow-b), var(--shadow-alpha)),
+    calc(var(--shadow-x-max) * 9px) calc(var(--shadow-y-max) * 9px) var(--shadow-radius) rgba(var(--pop-r), var(--pop-g), var(--pop-b), var(--shadow-alpha));
+    filter: brightness(var(--brightness));
+    animation: fadein .5s ease forwards, lift-up .5s ease forwards, march .5s ease forwards;
+ }
+ emph {
+  color: rgba(var(--pop-r), var(--pop-g), var(--pop-b), 0);
+  filter: brightness(100%);
+ }
+ h1, h2, h3, emp {
+  text-shadow:
+  /*
+  shadow-x, shadow-y, shadow-radius, shadow-color-rgba
+  Ray March effect
+     Draw a colored shadow at <x,y> position below the original text
+     each new shadow is darker and less opaque
+  */
+  calc(var(--shadow-x-max) * 1px) calc(var(--shadow-y-max) * 1px) 0 rgba(calc(var(--header-r) * .9), calc(var(--header-g) * .9), calc(var(--header-b) * .9), calc(var(--header-alpha))),
+  calc(var(--shadow-x-max) * 2px) calc(var(--shadow-y-max) * 2px) 0 rgba(calc(var(--header-r) * .9), calc(var(--header-g) * .9), calc(var(--header-b) * .9), calc(var(--header-alpha) - .2 )),
+  calc(var(--shadow-x-max) * 3px) calc(var(--shadow-y-max) * 3px) 0 rgba(calc(var(--header-r) * .8), calc(var(--header-g) * .8), calc(var(--header-b) * .8), calc(var(--header-alpha) - .3 )),
+  calc(var(--shadow-x-max) * 4px) calc(var(--shadow-y-max) * 4px) 0 rgba(calc(var(--header-r) * .8), calc(var(--header-g) * .8), calc(var(--header-b) * .8), calc(var(--header-alpha) - .4 )),
+  /* Hard Shadow
+     ground layer, doesnt have to be a shadow can be screen-space reflection
+  */
+  calc(var(--shadow-x-max) * 8px) calc(var(--shadow-y-max) * 8px) 0 rgba(calc(var(--shadow-r) * .9), calc(var(--shadow-g) * .9), calc(var(--shadow-b) * .9), calc(var(--header-alpha))),
+  /* Soft Shadow
+    another shadow layer
+  */
+  calc(var(--shadow-x-max) * 9px) calc(var(--shadow-y-max) * 9px) var(--shadow-radius) rgba(var(--shadow-r), var(--shadow-g), var(--shadow-b), var(--shadow-alpha)),
+  /* Glow - illumination
+    a glow layer - attcach to text pos
+  */
+  calc(var(--shadow-x-max) * 9px) calc(var(--shadow-y-max) * 9px) var(--shadow-radius) rgba(var(--header-r), var(--header-g), var(--header-b), var(--header-brightness));
+  text-indent: 5% each-line;
+  line-height: var(--line-height);
+  letter-spacing: var(--letter-spacing-f1);
+  animation: fadein .5s ease forwards, lift-up .5s ease forwards, march .5s ease forwards;
+}
+ }
+  @keyframes lightinout {
+    0%   { --brightness:  55%; }
+    10%  { --brightness:  60%; }
+    20%  { --brightness:  65%; }
+    30%  { --brightness:  70%; }
+    40%  { --brightness:  75%; }
+    50%  { --brightness:  80%; }
+    60%  { --brightness:  85%; }
+    70%  { --brightness:  90%; }
+    80%  { --brightness:  95%; }
+    90%  { --brightness:  100%;}
+    100% { --brightness:  95%; }
+  }
+  @keyframes lift-up {
+    0%  { --text-y: -1px; }
+    10% { --text-y: -2px; }
+    20% { --text-y: -3px; }
+    30% { --text-y: -4px; }
+    40% { --text-y: -5px; }
+    50% { --text-y: -6px; }
+    60% { --text-y: -7px; }
+    70% { --text-y: -8px; }
+    80% { --text-y: -9px; }
+    90% { --text-y: -10px;}
+    100 { --text-y: -11px;}
+ }
+  @keyframes march {
+    5% {
+      text-shadow:
+      calc(var(--shadow-x-max) * 1px) calc(var(--shadow-y-max) * 1px) 0 rgba(calc(var(--pop-r) * .9), calc(var(--pop-g) * .9), calc(var(--pop-b) * .9), calc(var(--pop-alpha) / 1 )),
+      calc(var(--shadow-x-max) * 8px) calc(var(--shadow-y-max) * 8px) 0 rgba(calc(var(--shadow-r) * .9), calc(var(--shadow-g) * .9), calc(var(--shadow-b) * .9), calc(var(--shadow-alpha))),
+      calc(var(--shadow-x-max) * 9px) calc(var(--shadow-y-max) * 9px) var(--shadow-radius) rgba(var(--shadow-r), var(--shadow-g), var(--shadow-b), var(--shadow-alpha)),
+      calc(var(--shadow-x-max) * 9px) calc(var(--shadow-y-max) * 9px) var(--shadow-radius) rgba(var(--pop-r), var(--pop-g), var(--pop-b), var(--shadow-alpha));}
+   }
+    10% {
+      text-shadow:
+      calc(var(--shadow-x-max) * 1px) calc(var(--shadow-y-max) * 1px) 0 rgba(calc(var(--pop-r) * .9), calc(var(--pop-g) * .9), calc(var(--pop-b) * .9), calc(var(--pop-alpha) / 1 )),
+      calc(var(--shadow-x-max) * 2px) calc(var(--shadow-y-max) * 2px) 0 rgba(calc(var(--pop-r) * .9), calc(var(--pop-g) * .9), calc(var(--pop-b) * .9), calc(var(--pop-alpha) / 1.2 )),
+      calc(var(--shadow-x-max) * 8px) calc(var(--shadow-y-max) * 8px) 0 rgba(calc(var(--shadow-r) * .9), calc(var(--shadow-g) * .9), calc(var(--shadow-b) * .9), calc(var(--shadow-alpha))),
+      calc(var(--shadow-x-max) * 9px) calc(var(--shadow-y-max) * 9px) var(--shadow-radius) rgba(var(--shadow-r), var(--shadow-g), var(--shadow-b), var(--shadow-alpha)),
+      calc(var(--shadow-x-max) * 9px) calc(var(--shadow-y-max) * 9px) var(--shadow-radius) rgba(var(--pop-r), var(--pop-g), var(--pop-b), var(--shadow-alpha));}
+   }
+   20% {
+    text-shadow:
+      calc(var(--shadow-x-max) * 1px) calc(var(--shadow-y-max) * 1px) 0 rgba(calc(var(--pop-r) * .9), calc(var(--pop-g) * .9), calc(var(--pop-b) * .9), calc(var(--pop-alpha) / 1 )),
+      calc(var(--shadow-x-max) * 2px) calc(var(--shadow-y-max) * 2px) 0 rgba(calc(var(--pop-r) * .9), calc(var(--pop-g) * .9), calc(var(--pop-b) * .9), calc(var(--pop-alpha) / 1.2 )),
+      calc(var(--shadow-x-max) * 3px) calc(var(--shadow-y-max) * 3px) 0 rgba(calc(var(--pop-r) * .8), calc(var(--pop-g) * .8), calc(var(--pop-b) * .8), calc(var(--pop-alpha) / 1.3 )),
+      calc(var(--shadow-x-max) * 8px) calc(var(--shadow-y-max) * 8px) 0 rgba(calc(var(--shadow-r) * .9), calc(var(--shadow-g) * .9), calc(var(--shadow-b) * .9), calc(var(--shadow-alpha))),
+      calc(var(--shadow-x-max) * 9px) calc(var(--shadow-y-max) * 9px) var(--shadow-radius) rgba(var(--shadow-r), var(--shadow-g), var(--shadow-b), var(--shadow-alpha)),
+      calc(var(--shadow-x-max) * 9px) calc(var(--shadow-y-max) * 9px) var(--shadow-radius) rgba(var(--pop-r), var(--pop-g), var(--pop-b), var(--shadow-alpha));}
+   }
+   30% {
+    text-shadow:
+      calc(var(--shadow-x-max) * 1px) calc(var(--shadow-y-max) * 1px) 0 rgba(calc(var(--pop-r) * .9), calc(var(--pop-g) * .9), calc(var(--pop-b) * .9), calc(var(--pop-alpha) / 1 )),
+      calc(var(--shadow-x-max) * 2px) calc(var(--shadow-y-max) * 2px) 0 rgba(calc(var(--pop-r) * .9), calc(var(--pop-g) * .9), calc(var(--pop-b) * .9), calc(var(--pop-alpha) / 1.2 )),
+      calc(var(--shadow-x-max) * 3px) calc(var(--shadow-y-max) * 3px) 0 rgba(calc(var(--pop-r) * .8), calc(var(--pop-g) * .8), calc(var(--pop-b) * .8), calc(var(--pop-alpha) / 1.3 )),
+      calc(var(--shadow-x-max) * 4px) calc(var(--shadow-y-max) * 4px) 0 rgba(calc(var(--pop-r) * .8), calc(var(--pop-g) * .8), calc(var(--pop-b) * .8), calc(var(--pop-alpha) / 1.4 )),
+      calc(var(--shadow-x-max) * 8px) calc(var(--shadow-y-max) * 8px) 0 rgba(calc(var(--shadow-r) * .9), calc(var(--shadow-g) * .9), calc(var(--shadow-b) * .9), calc(var(--shadow-alpha))),
+      calc(var(--shadow-x-max) * 9px) calc(var(--shadow-y-max) * 9px) var(--shadow-radius) rgba(var(--shadow-r), var(--shadow-g), var(--shadow-b), var(--shadow-alpha)),
+      calc(var(--shadow-x-max) * 9px) calc(var(--shadow-y-max) * 9px) var(--shadow-radius) rgba(var(--pop-r), var(--pop-g), var(--pop-b), var(--shadow-alpha));}
+   }
+   40% {
+    text-shadow:
+      calc(var(--shadow-x-max) * 1px) calc(var(--shadow-y-max) * 1px) 0 rgba(calc(var(--pop-r) * .9), calc(var(--pop-g) * .9), calc(var(--pop-b) * .9), calc(var(--pop-alpha) / 1 )),
+      calc(var(--shadow-x-max) * 2px) calc(var(--shadow-y-max) * 2px) 0 rgba(calc(var(--pop-r) * .9), calc(var(--pop-g) * .9), calc(var(--pop-b) * .9), calc(var(--pop-alpha) / 1.2 )),
+      calc(var(--shadow-x-max) * 3px) calc(var(--shadow-y-max) * 3px) 0 rgba(calc(var(--pop-r) * .8), calc(var(--pop-g) * .8), calc(var(--pop-b) * .8), calc(var(--pop-alpha) / 1.3 )),
+      calc(var(--shadow-x-max) * 4px) calc(var(--shadow-y-max) * 4px) 0 rgba(calc(var(--pop-r) * .8), calc(var(--pop-g) * .8), calc(var(--pop-b) * .8), calc(var(--pop-alpha) / 1.4 )),
+      calc(var(--shadow-x-max) * 5px) calc(var(--shadow-y-max) * 5px) 0 rgba(calc(var(--pop-r) * .8), calc(var(--pop-g) * .8), calc(var(--pop-b) * .8), calc(var(--pop-alpha) / 1.5 )),
+      calc(var(--shadow-x-max) * 8px) calc(var(--shadow-y-max) * 8px) 0 rgba(calc(var(--shadow-r) * .9), calc(var(--shadow-g) * .9), calc(var(--shadow-b) * .9), calc(var(--shadow-alpha))),
+      calc(var(--shadow-x-max) * 9px) calc(var(--shadow-y-max) * 9px) var(--shadow-radius) rgba(var(--shadow-r), var(--shadow-g), var(--shadow-b), var(--shadow-alpha)),
+      calc(var(--shadow-x-max) * 9px) calc(var(--shadow-y-max) * 9px) var(--shadow-radius) rgba(var(--pop-r), var(--pop-g), var(--pop-b), var(--shadow-alpha));}
+   }
+   50% {
+    text-shadow:
+      calc(var(--shadow-x-max) * 1px) calc(var(--shadow-y-max) * 1px) 0 rgba(calc(var(--pop-r) * .9), calc(var(--pop-g) * .9), calc(var(--pop-b) * .9), calc(var(--pop-alpha) / 1 )),
+      calc(var(--shadow-x-max) * 2px) calc(var(--shadow-y-max) * 2px) 0 rgba(calc(var(--pop-r) * .9), calc(var(--pop-g) * .9), calc(var(--pop-b) * .9), calc(var(--pop-alpha) / 1.2 )),
+      calc(var(--shadow-x-max) * 3px) calc(var(--shadow-y-max) * 3px) 0 rgba(calc(var(--pop-r) * .8), calc(var(--pop-g) * .8), calc(var(--pop-b) * .8), calc(var(--pop-alpha) / 1.3 )),
+      calc(var(--shadow-x-max) * 4px) calc(var(--shadow-y-max) * 4px) 0 rgba(calc(var(--pop-r) * .8), calc(var(--pop-g) * .8), calc(var(--pop-b) * .8), calc(var(--pop-alpha) / 1.4 )),
+      calc(var(--shadow-x-max) * 5px) calc(var(--shadow-y-max) * 5px) 0 rgba(calc(var(--pop-r) * .8), calc(var(--pop-g) * .8), calc(var(--pop-b) * .8), calc(var(--pop-alpha) / 1.5 )),
+      calc(var(--shadow-x-max) * 6px) calc(var(--shadow-y-max) * 6px) 0 rgba(calc(var(--pop-r) * .8), calc(var(--pop-g) * .8), calc(var(--pop-b) * .8), calc(var(--pop-alpha) / 1.6 )),
+      calc(var(--shadow-x-max) * 8px) calc(var(--shadow-y-max) * 8px) 0 rgba(calc(var(--shadow-r) * .9), calc(var(--shadow-g) * .9), calc(var(--shadow-b) * .9), calc(var(--shadow-alpha))),
+      calc(var(--shadow-x-max) * 9px) calc(var(--shadow-y-max) * 9px) var(--shadow-radius) rgba(var(--shadow-r), var(--shadow-g), var(--shadow-b), var(--shadow-alpha)),
+      calc(var(--shadow-x-max) * 9px) calc(var(--shadow-y-max) * 9px) var(--shadow-radius) rgba(var(--pop-r), var(--pop-g), var(--pop-b), var(--shadow-alpha));}
+   }
+   60% {
+    text-shadow:
+      calc(var(--shadow-x-max) * 1px) calc(var(--shadow-y-max) * 1px) 0 rgba(calc(var(--pop-r) * .9), calc(var(--pop-g) * .9), calc(var(--pop-b) * .9), calc(var(--pop-alpha) / 1 )),
+      calc(var(--shadow-x-max) * 2px) calc(var(--shadow-y-max) * 2px) 0 rgba(calc(var(--pop-r) * .9), calc(var(--pop-g) * .9), calc(var(--pop-b) * .9), calc(var(--pop-alpha) / 1.2 )),
+      calc(var(--shadow-x-max) * 3px) calc(var(--shadow-y-max) * 3px) 0 rgba(calc(var(--pop-r) * .8), calc(var(--pop-g) * .8), calc(var(--pop-b) * .8), calc(var(--pop-alpha) / 1.3 )),
+      calc(var(--shadow-x-max) * 4px) calc(var(--shadow-y-max) * 4px) 0 rgba(calc(var(--pop-r) * .8), calc(var(--pop-g) * .8), calc(var(--pop-b) * .8), calc(var(--pop-alpha) / 1.4 )),
+      calc(var(--shadow-x-max) * 5px) calc(var(--shadow-y-max) * 5px) 0 rgba(calc(var(--pop-r) * .8), calc(var(--pop-g) * .8), calc(var(--pop-b) * .8), calc(var(--pop-alpha) / 1.5 )),
+      calc(var(--shadow-x-max) * 6px) calc(var(--shadow-y-max) * 6px) 0 rgba(calc(var(--pop-r) * .8), calc(var(--pop-g) * .8), calc(var(--pop-b) * .8), calc(var(--pop-alpha) / 1.6 )),
+      calc(var(--shadow-x-max) * 7px) calc(var(--shadow-y-max) * 7px) 0 rgba(calc(var(--pop-r) * .8), calc(var(--pop-g) * .8), calc(var(--pop-b) * .8), calc(var(--pop-alpha) / 1.7 )),
+      calc(var(--shadow-x-max) * 8px) calc(var(--shadow-y-max) * 8px) 0 rgba(calc(var(--shadow-r) * .9), calc(var(--shadow-g) * .9), calc(var(--shadow-b) * .9), calc(var(--shadow-alpha))),
+      calc(var(--shadow-x-max) * 9px) calc(var(--shadow-y-max) * 9px) var(--shadow-radius) rgba(var(--shadow-r), var(--shadow-g), var(--shadow-b), var(--shadow-alpha)),
+      calc(var(--shadow-x-max) * 9px) calc(var(--shadow-y-max) * 9px) var(--shadow-radius) rgba(var(--pop-r), var(--pop-g), var(--pop-b), var(--shadow-alpha));}
+   }
+   70% {
+    text-shadow:
+      calc(var(--shadow-x-max) * 1px) calc(var(--shadow-y-max) * 1px) 0 rgba(calc(var(--pop-r) * .9), calc(var(--pop-g) * .9), calc(var(--pop-b) * .9), calc(var(--pop-alpha) / 1 )),
+      calc(var(--shadow-x-max) * 2px) calc(var(--shadow-y-max) * 2px) 0 rgba(calc(var(--pop-r) * .9), calc(var(--pop-g) * .9), calc(var(--pop-b) * .9), calc(var(--pop-alpha) / 1.2 )),
+      calc(var(--shadow-x-max) * 3px) calc(var(--shadow-y-max) * 3px) 0 rgba(calc(var(--pop-r) * .8), calc(var(--pop-g) * .8), calc(var(--pop-b) * .8), calc(var(--pop-alpha) / 1.3 )),
+      calc(var(--shadow-x-max) * 4px) calc(var(--shadow-y-max) * 4px) 0 rgba(calc(var(--pop-r) * .8), calc(var(--pop-g) * .8), calc(var(--pop-b) * .8), calc(var(--pop-alpha) / 1.4 )),
+      calc(var(--shadow-x-max) * 8px) calc(var(--shadow-y-max) * 8px) 0 rgba(calc(var(--shadow-r) * .9), calc(var(--shadow-g) * .9), calc(var(--shadow-b) * .9), calc(var(--shadow-alpha))),
+      calc(var(--shadow-x-max) * 9px) calc(var(--shadow-y-max) * 9px) var(--shadow-radius) rgba(var(--shadow-r), var(--shadow-g), var(--shadow-b), var(--shadow-alpha)),
+      calc(var(--shadow-x-max) * 9px) calc(var(--shadow-y-max) * 9px) var(--shadow-radius) rgba(var(--pop-r), var(--pop-g), var(--pop-b), var(--shadow-alpha));}
+   }
+   80% {
+    text-shadow:
+      calc(var(--shadow-x-max) * 1px) calc(var(--shadow-y-max) * 1px) 0 rgba(calc(var(--pop-r) * .9), calc(var(--pop-g) * .9), calc(var(--pop-b) * .9), calc(var(--pop-alpha) / 1 )),
+      calc(var(--shadow-x-max) * 2px) calc(var(--shadow-y-max) * 2px) 0 rgba(calc(var(--pop-r) * .9), calc(var(--pop-g) * .9), calc(var(--pop-b) * .9), calc(var(--pop-alpha) / 1.2 )),
+      calc(var(--shadow-x-max) * 3px) calc(var(--shadow-y-max) * 3px) 0 rgba(calc(var(--pop-r) * .8), calc(var(--pop-g) * .8), calc(var(--pop-b) * .8), calc(var(--pop-alpha) / 1.3 )),
+      calc(var(--shadow-x-max) * 4px) calc(var(--shadow-y-max) * 4px) 0 rgba(calc(var(--pop-r) * .8), calc(var(--pop-g) * .8), calc(var(--pop-b) * .8), calc(var(--pop-alpha) / 1.4 )),
+      calc(var(--shadow-x-max) * 8px) calc(var(--shadow-y-max) * 8px) 0 rgba(calc(var(--shadow-r) * .9), calc(var(--shadow-g) * .9), calc(var(--shadow-b) * .9), calc(var(--shadow-alpha))),
+      calc(var(--shadow-x-max) * 9px) calc(var(--shadow-y-max) * 9px) var(--shadow-radius) rgba(var(--shadow-r), var(--shadow-g), var(--shadow-b), var(--shadow-alpha)),
+      calc(var(--shadow-x-max) * 9px) calc(var(--shadow-y-max) * 9px) var(--shadow-radius) rgba(var(--pop-r), var(--pop-g), var(--pop-b), var(--shadow-alpha));}
+   }
+   90% {
+    text-shadow:
+      calc(var(--shadow-x-max) * 1px) calc(var(--shadow-y-max) * 1px) 0 rgba(calc(var(--pop-r) * .9), calc(var(--pop-g) * .9), calc(var(--pop-b) * .9), calc(var(--pop-alpha) / 1 )),
+      calc(var(--shadow-x-max) * 2px) calc(var(--shadow-y-max) * 2px) 0 rgba(calc(var(--pop-r) * .9), calc(var(--pop-g) * .9), calc(var(--pop-b) * .9), calc(var(--pop-alpha) / 1.2 )),
+      calc(var(--shadow-x-max) * 3px) calc(var(--shadow-y-max) * 3px) 0 rgba(calc(var(--pop-r) * .8), calc(var(--pop-g) * .8), calc(var(--pop-b) * .8), calc(var(--pop-alpha) / 1.3 )),
+      calc(var(--shadow-x-max) * 4px) calc(var(--shadow-y-max) * 4px) 0 rgba(calc(var(--pop-r) * .8), calc(var(--pop-g) * .8), calc(var(--pop-b) * .8), calc(var(--pop-alpha) / 1.4 )),
+      calc(var(--shadow-x-max) * 8px) calc(var(--shadow-y-max) * 8px) 0 rgba(calc(var(--shadow-r) * .9), calc(var(--shadow-g) * .9), calc(var(--shadow-b) * .9), calc(var(--shadow-alpha))),
+      calc(var(--shadow-x-max) * 9px) calc(var(--shadow-y-max) * 9px) var(--shadow-radius) rgba(var(--shadow-r), var(--shadow-g), var(--shadow-b), var(--shadow-alpha)),
+      calc(var(--shadow-x-max) * 9px) calc(var(--shadow-y-max) * 9px) var(--shadow-radius) rgba(var(--pop-r), var(--pop-g), var(--pop-b), var(--shadow-alpha));}
+   }
+   100% {
+    text-shadow:
+      calc(var(--shadow-x-max) * 1px) calc(var(--shadow-y-max) * 1px) 0 rgba(calc(var(--pop-r) * .9), calc(var(--pop-g) * .9), calc(var(--pop-b) * .9), calc(var(--pop-alpha) / 1 )),
+      calc(var(--shadow-x-max) * 2px) calc(var(--shadow-y-max) * 2px) 0 rgba(calc(var(--pop-r) * .9), calc(var(--pop-g) * .9), calc(var(--pop-b) * .9), calc(var(--pop-alpha) / 1.2 )),
+      calc(var(--shadow-x-max) * 3px) calc(var(--shadow-y-max) * 3px) 0 rgba(calc(var(--pop-r) * .8), calc(var(--pop-g) * .8), calc(var(--pop-b) * .8), calc(var(--pop-alpha) / 1.3 )),
+      calc(var(--shadow-x-max) * 4px) calc(var(--shadow-y-max) * 4px) 0 rgba(calc(var(--pop-r) * .8), calc(var(--pop-g) * .8), calc(var(--pop-b) * .8), calc(var(--pop-alpha) / 1.4 )),
+      calc(var(--shadow-x-max) * 8px) calc(var(--shadow-y-max) * 8px) 0 rgba(calc(var(--shadow-r) * .9), calc(var(--shadow-g) * .9), calc(var(--shadow-b) * .9), calc(var(--shadow-alpha))),
+      calc(var(--shadow-x-max) * 9px) calc(var(--shadow-y-max) * 9px) var(--shadow-radius) rgba(var(--shadow-r), var(--shadow-g), var(--shadow-b), var(--shadow-alpha)),
+      calc(var(--shadow-x-max) * 9px) calc(var(--shadow-y-max) * 9px) var(--shadow-radius) rgba(var(--pop-r), var(--pop-g), var(--pop-b), var(--shadow-alpha));}
+   }
+   @keyframes fadein {
+    0%   {
+        --shadow-alpha: 0%,
+        --brightness: 55%,
+        --text-y: -1px;
+        --shadow-x-max: .1;
+        --shadow-y-max: -.1;
+      }
+    10%  {
+        --shadow-alpha: 10%,
+        --brightness: 60%,
+        --text-y: -2px;
+        --shadow-x-max: .2;
+        --shadow-y-max: -.2;
+      }
+    20%  {
+        --shadow-alpha: 20%,
+        --brightness: 65%,
+        --text-y: -3px;
+        --shadow-x-max: .3;
+        --shadow-y-max: -.3;
+      }
+    30%  {
+        --shadow-alpha: 30%,
+        --brightness: 70%,
+        --text-y: -4px;
+        --shadow-x-max: .4;
+        --shadow-y-max: -.4;
+      }
+    40%  {
+        --shadow-alpha: 40%,
+        --brightness: 75%,
+        --text-y: -5px;
+        --shadow-x-max: .5;
+        --shadow-y-max: -.5;
+      }
+    50%  {
+        --shadow-alpha: 50%,
+        --brightness: 80%,
+        --text-y: -6px;
+        --shadow-x-max: .6;
+        --shadow-y-max: -.6;
+      }
+    60%  {
+        --shadow-alpha: 60%,
+        --brightness: 85%,
+        --text-y: -7px;
+        --shadow-x-max: .7;
+        --shadow-y-max: -.7;
+      }
+    70%  {
+        --shadow-alpha: 70%,
+        --brightness: 90%,
+        --text-y: -8px;
+        --shadow-x-max: .8;
+        --shadow-y-max: -.8;
+      }
+    80%  {
+        --shadow-alpha: 80%,
+        --brightness: 95%,
+        --text-y: -9px;
+        --shadow-x-max: .9;
+        --shadow-y-max: -.9;
+      }
+    90%  {
+        --shadow-alpha: 90%,
+        --brightness: 100%,
+        --text-y: -10px
+        --shadow-x-max: 1;
+        --shadow-y-max: -1;
+       ;}
+    100% {
+        --shadow-alpha: 100%,
+        --brightness: 95%,
+        --text-y: -11px
+        --shadow-x-max: 1.1;
+        --shadow-y-max: -1.1;
+       ;}
+  }

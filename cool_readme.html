@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@300&family=Source+Sans+Pro:wght@300&    display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="cool_css.css">
+</head>
+
+<body>
+    <svg fill="none" background-size=contain viewBox=100% width=100% height=100% xmlns="http://www.w3.org/2000/svg">
+	<foreignObject width="100%" height="100%" background-size=contain;>
+		<div xmlns="http://www.w3.org/1999/xhtml">
+			<div class="container">
+				<h1>this is a demo</h1>
+					<p>This is some text showing how the CSS converts readme into a webpage</p>
+					<h2> look at these datas </h2>
+						<ul> Check Out My List:
+							<li>this is an item in my list</li>
+							<li>this item is <emp>emphasized</emp>
+							<li>this one is done <emph>differently</emph>.</li>
+							<li>and this one has a <a href="www.cataas.come">Link</a>
+				        </ul>
+			</div>
+		</div>
+	</foreignObject>
+</svg>
