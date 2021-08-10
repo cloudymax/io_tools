@@ -4,7 +4,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com"     crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400&family=Source+Sans+Pro:wght@300&    display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="cool_css.css">
+    <link rel="stylesheet" href="https://github.com/cloudymax/io_tools/blob/master/cool_css.css">
 </head>
 
 <svg fill="none" background-size=contain viewBox=100% width=100% height=100% xmlns="http://www.w3.org/2000/svg">
