@@ -24,73 +24,73 @@ vars.change_value('working_dir', working_directory, debug)
 
 ```
 
-## Functions
+__To Use:__
 
-___
+```bash
+# cd to the program folder
+cd data_transformation
 
-### >get_timestamp
+# install dependancies
+pip3 install -r requirements.txt
 
- Returns a timestamp in `DD:MMM:YYYY (HH:MM:SS.f)` format
+# run the script
+python3 yaml_to_json_convert.py
 
-### >read_file
+```
 
- Reads json file from path: returns json object
+__Examples:__
 
-### >azure_auto_instal
+```python
 
- Attempts to force azure cli to auto-install cost management module
+import data_transformation as io
+import json
 
-### >print_pretty
+debug = True
+go_steppy = False
+input_file = "pref_input_test.yaml"
 
- Prettified json console output: returns `<string>`
+# reads a yaml file
+settings = io.read_file(input_file, debug)
 
-### >colorize_json
+# print as pretty json
+io.print_pretty(settings, debug, "json")
 
- Prints colorful json
+#print as compact json
+print(settings)
 
-### >vailidate_json_file
+# print as yaml
+io.print_pretty(settings, debug, "yaml")
 
- Takes a `file_path`, returns `query{dict(<string>,<string>)}`
+# stringify
+vars = io.Variables(settings, debug, go_steppy)
 
-### >validate_json_object
+# print
+io.print_pretty(settings, debug, "yaml")
+io.print_pretty(settings, debug, "json")
+print(vars.work[0]['name'])
 
- Takes a `file_path`, returns `query{dict(<string>,<string>)}`
-
-### >write_file
-
- Attempt to save <payload> to disk at <path> as json file
-
-### >update_file
-
- Update an existing file on disk
-
-### >make_dir
-
- Makes/deletes directory
-
+# convert to csv
+io.write_file("test.json", vars.__dict__, debug, "json")
+io.json_to_csv("test.json", debug)
+```
 
 ## Class Methods
 
 ___
-### >Datastore()
+### Datastore
 
- Datastore is a `<key>:<value>` dict that accepts any  types and is used for portability. It achieves this  by storing all variables in a generic dictionary  with the `change()` method overriden to be an event  system.
+ Datastore is a `<key>:<value>` dict that accepts any  types and is used for portability. It achieves this  by storing all variables in a generic dictionary  with the `change()` method overriden to be an event system.
 
-### Variables()
+### Variables
 
  Object that holds a list of `Datastore()`s,
  When eneabled, the built-in `go_steppy()` function  will pause script execution on any memory state  change to provide a json formatted diff. for example:
 
  ![go_steppy](go_steppy.png)
 
-### change_value()
-
- Triggered when any variable within the `Datastore()`  is updated, or created.
-
-### get_current_value()
-
- Returns the current value of a variable within the `Datastore()`, and triggers an event.
-
-### diff_values()
-
- When enabled, deepdiffs the current and proposed change to the `Datastore()` object
+  change_value:
+    Triggered when any variable within the `Datastore()`  is updated, or created.
+  get_current_value:
+    Returns the current value of a variable within the `Datastore()`, and triggers an event.
+  diff_values:
+    When enabled, deepdiffs the current and proposed change to the `Datastore()` object

@@ -1,47 +1,158 @@
-import os                       # system file paths
-import json                     # json formatting
-import dictor                   # json formatting
-import shutil                   # deletes directories
-import subprocess               # system commands
-from logging import debug       # json data
-from datetime import datetime   # timestamps
-from deepdiff import DeepDiff   # pip3 install deepdiff
-from pygments import highlight  # tools for colorizing the json output
-from pygments.lexers.web import JsonLexer                          # tools for colorizing the json output
-from pygments.formatters.terminal import TerminalFormatter         # tools for colorizing the json output
+#/usr/bin/python3
+# TODO: cleanup base libs
+import json
+from datetime import datetime
+import sys
+from deepdiff import DeepDiff
+from dictor import dictor
+# TODO: use me
+import logging as log
+from logging import debug
+import os
+import pandas as pd
+import pathlib
+from pyfiglet import Figlet
+from pygments import highlight
+from pygments.lexers.data import JsonLexer
+from pygments.lexers.data import YamlLexer
+from pygments.lexers import get_lexer_by_name
+from pygments.formatters import (Terminal256Formatter,
+                                 HtmlFormatter,
+                                 TerminalFormatter)
+import re
+import shutil
+import time
+import yaml
+from yaml.loader import SafeLoader
 
-def get_timestamp():                                               # returns a timestamp in DD:MMM:YYYY (HH:MM:SS.f) format
+
+# TODO: Logging
+log_level = log.DEBUG
+program_log = log.getLogger("my-logger")
+#program_log.basicConfig(stream=sys.stderr, level=log_level)
+program_log.info("logging config loaded")
+
+
+
+def get_timestamp():
+    """
+    returns a timestamp in DD:MMM:YYYY (HH:MM:SS.f) format
+    """
+
     now = datetime.now()
     timestamp = now.strftime("%d-%b-%Y (%H:%M:%S.%f)")
     return timestamp
 
-def read_file(path: str):                                          # reads json file from <path>: returns <json object>
-    print_pretty("trying to read: " + path)
-    try:
-        with open(path, 'r', encoding='utf-8') as cache_file:
-            raw = cache_file.read()
-            data = json.loads(raw)
-            print_pretty("successfully read: " + path)
-    except:
-        print_pretty("failed to read: " + path, False)
-        print_pretty("deleting " + path, False)
-        os.remove(path)
-        data = False
 
-    return data
+def get_epoch():
+    """
+    returns a timestamp in epoch format
+    """
 
-def azure_auto_install():                                          # attempts to force azure cli to auto-install cost management module
+    # logging
+    ts = get_timestamp()
+    program_log.debug(f"function 'get_epoch' called at {ts}")
 
-    data = subprocess.run([
-    'az','config',
-    'set','extension.use_dynamic_install=yes_without_prompt'
-    ], capture_output=True)
+    timestamp = time.time()
 
-    #print(data.stdout)
-    print(data.stderr)
+    return timestamp
 
-def print_pretty(data, debug: bool = False):                       # prettified json console output: returns <string>
-    # Generate JSON
+
+def read_file(path: str, debug, format: str = "json"):
+    """
+    reads json file from <path>: returns <json object>
+    """
+
+    # logging
+    ts = get_timestamp()
+    program_log.debug(f"function 'read_file' called at {ts}")
+
+    # try to read the file
+    message = print_pretty(f"trying to read: {path}", debug, format)
+    program_log.debug(message)
+
+    file_extension = pathlib.Path(path).suffix
+
+    if file_extension == ".yaml":
+        try:
+            data = read_yaml_file(path)
+            message = print_pretty(f"successfully read: {path}", debug, format)
+            program_log.debug(message)
+
+        except Exception:
+            message = print_pretty(f"Failed to read: {path}", True)
+            program_log.error(message)
+            data = False
+
+    if file_extension == ".json":
+        try:
+            data = read_json_file(path)
+            message = print_pretty(f"successfully read: {path}", debug, format)
+            program_log.debug(message)
+
+        except Exception:
+            message = print_pretty(f"Failed to read: {path}", True)
+            program_log.error(message)
+            data = False
+
+    confirmed_data = validate_json_object(data, debug, format)
+    return confirmed_data['path']
+
+
+def read_yaml_file(yaml_file_path):
+    with open(yaml_file_path, 'r') as f:
+        raw = f.read()
+        yaml_object = yaml.safe_load(raw)
+
+    return yaml_object
+
+
+def read_json_file(json_file_path):
+    with open(json_file_path, 'r', encoding='utf-8') as f:
+        raw = f.read()
+        json_object = json.dumps(raw)
+
+    return json_object
+
+
+def json_to_yaml(json_data, debug):
+    """
+    converts json_data: str into a json object{}
+    converts the json object{} into a yaml: str
+    """
+    dumped = yaml.safe_dump(json.loads(json_data),
+                            default_style="",
+                            default_flow_style=False)
+    return dumped
+
+
+def yaml_to_json(yaml_file):
+    """
+    converts a yaml string into an object
+    dumps the object as json
+    """
+    with open(yaml_file, 'r') as f:
+      raw = f.read()
+      yaml_object = yaml.safe_load(raw)
+      json_data = json.dumps(yaml_object, indent=4, sort_keys=True)
+
+    return json_data
+
+
+def json_to_csv(json_file_path):
+    """
+    dump a json object to a file, then convert the file to a csv
+    """
+    with open(json_file_path, encoding='utf-8-sig') as f_input:
+        df = pd.read_json(f_input)
+        df.to_csv('test.csv', encoding='utf-8', index=False)
+
+
+def print_pretty(data, debug: bool = False, format: str = "json"):
+    """
+    prettified json console output: returns <string>
+    Generate JSON
+    """
     json_data = {}
     try:
         json_data = validate_json_object(data)
@@ -54,20 +165,39 @@ def print_pretty(data, debug: bool = False):                       # prettified 
 
     if json_data['readable'] != False:
         try:
-            colorize_json(json_data['path'], debug)
+            if format == "yaml":
+                raw = json_to_yaml(data, debug)
+                colorize_yaml(raw, debug)
+            else:
+                if format == "json":
+                    colorize_json(json_data['path'], debug)
         except:
             print(f"Well shit, i cant parse this: {json_data}")
             if debug:
                 name = input("Any key to continue")
 
-def colorize_json(json_data, debug):                               # prints colorful json
-    # Colorize it
+
+def colorize_json(json_data, debug):
+    """
+    print colorful json data
+    """
+
+    # dump json to a string
+    data = json.dumps(json.loads(json_data),
+                        indent=" ",
+                        separators=(',',': '),
+                        sort_keys=True,
+                        skipkeys=False)
+
+
+    # create the highlighted text
     colorful = highlight(
-        json_data,
-        lexer=JsonLexer(),
-        formatter=TerminalFormatter(),
+        data,
+        lexer=get_lexer_by_name("json"),
+        formatter=Terminal256Formatter(style="fruity", linenos=True),
     )
 
+    # print the highlighted text
     if debug == True:
         print(colorful)
     else:
@@ -76,18 +206,48 @@ def colorize_json(json_data, debug):                               # prints colo
         log['data'] = colorful
         (log, True)
 
-def validate_json_file(path: str, debug=False):                    # takes a <file_path>, returns query{dict(<string>,<string>)}
+
+def colorize_yaml(data, debug):
+    """
+    prints colorful yaml data
+    """
+
+    # create highlighted text
+    colorful = highlight(
+        data,
+        lexer=get_lexer_by_name("yaml"),
+        formatter=Terminal256Formatter(style="fruity", linenos=True),
+    )
+
+    # print the highlighted text
+    if debug == True:
+        print(colorful)
+    else:
+        log = {}
+        log['time'] = get_timestamp()
+        log['data'] = colorful
+        (log, True)
+
+
+def validate_json_file(path: str, debug=False, format="json"):
+    """
+    takes a <file_path>, returns query{dict(<string>,<string>)}
+    """
     query = {}
     query['path'] = path
-    if read_file(path) == False:
+    if read_file(path, debug) == False:
         query['readable'] = False
     else:
         query['readable'] = True
-        print_pretty("file is valid json :" + path, debug)
+        print_pretty("file is valid json :" + path, debug, format)
 
     return query
 
-def validate_json_object(object, debug=False):                     # takes a <file_path>, returns query{dict(<string>,<string>)}
+
+def validate_json_object(object, debug=False, format="json"):
+    """
+    takes a <file_path>, returns query{dict(<string>,<string>)}
+    """
     query = {}
     try:
         # is it already json?
@@ -97,146 +257,281 @@ def validate_json_object(object, debug=False):                     # takes a <fi
     except:
         try:
             # can I make it json?
-            raw_json = json.dumps(object, indent='\t', separators=(',', ': '), sort_keys=True, skipkeys=True)
+            raw_json = json.dumps(object,
+                                  separators=(',', ': '),
+                                  sort_keys=True,
+                                  skipkeys=True)
             query['readable'] = True
             query['path'] = raw_json
         except:
             # not json :(
-            print_pretty("NOT A VALID JSON OBJECT", debug)
+            print_pretty("NOT A VALID JSON OBJECT", debug, format)
             query['readable'] = False
             if debug:
                 name = input("Any key to continue")
 
     return query
 
-def write_file(path: str, payload: str, debug = False):            # attempt to save <payload> to disk at <path> as json file
+
+def write_file(path: str, payload: str, debug = False, format="json"):
+    """
+    attempt to save <payload> to disk at <path> as json file
+    """
+    # check if the file and path exist on the target system,
+    # if not, create it. return an error if we fail
     if not os.path.isfile(path):
         try:
-            print_pretty("trying to write file: " + path, debug)
-            with open(path, "w", encoding='utf-8') as save_file:
-                save_file.write(json.dumps(payload, indent=4, sort_keys=True))
+            print_pretty(f"trying to write file: {path}", debug, format)
+            text = dictor(payload, pretty=True)
+            with open(path, "w") as save_file:
+                save_file.write(text)
         except:
-            print_pretty("failed to save: " + path, debug)
+            print_pretty(f"failed to save: {path}", debug, format)
             if debug:
-                name = input("Any key to continue")
+               name = input("Any key to continue")
     else:
+    # if the file DOES exist, pop up a warning that I'm about to delete it.
         try:
-            print_pretty("####################################################################################################", debug)
-            print_pretty("# " + path, debug)
-            print_pretty("# file already exists. " + path, debug)
-            print_pretty("# if you dont want to delete the contents of the file on write, use the update_file() function", debug)
-            print_pretty("# clearing file... " + path, debug)
-            print_pretty("####################################################################################################", debug)
+            # this creates a long string of 80 #'s to break up text
+            divider = "#".center(79,"#")
+
+            # warn the user
+            print_pretty(divider, debug, format)
+            print_pretty(f"# file already exists: {path}", debug, format)
+
+            desc = ("# if you dont want to delete the contents of the " +
+                    "file on write, use the update_file() function")
+            print_pretty(desc, debug, format)
+
+            print_pretty(f"# clearing file... {path}", debug, format)
+            print_pretty(divider, debug, format)
+
+            # actually delete the file
             os.remove(path)
+
+            # now try the whole loop again
             write_file(path, payload, debug)
         except:
-            print_pretty("failed to save: " + path, debug)
+            print_pretty(f"failed to save: {path}", debug, format)
             if debug:
                 name = input("Any key to continue")
 
+    # validate that we can read the file we wrote
     validate_json_file(path, debug)
 
-def update_file(path: str, payload: str, debug = False):           # update an existing file on disk
-    if os.path.isfile(path):
-        try:
-            print_pretty("trying to update file: " + path, debug)
-            with open(path, "a+", encoding='utf-8') as save_file:
-                save_file.write(json.dumps(payload, indent=4, sort_keys=True))
-        except:
-            print_pretty("failed to update: " + path, debug)
-    else:
-        write_file(path, payload, debug)
 
-    validate_json_file(path, debug)
+def update_file(path: str, payload: str, debug = False, format="json"):
+    """
+    update an existing file on disk
+    """
+    try:
+        with open(path, "a") as save_file:
+            save_file.write(payload)
+            save_file.close()
+    except:
+        print_pretty("failed to update: " + path, debug, format)
 
-def make_dir(path: str, clear: bool = False, debug: bool = False): # makes/deletes directory
+
+def make_dir(path: str, clear: bool = False, debug: bool = False,
+             format="json"):
+    """
+    makes/deletes directory
+    """
+    # if the directory does not exist, try to create it
     if not os.path.isdir(path):
-        print_pretty('directory is not present. Creating ' + path, debug)
+        print_pretty(f'Directory is not present. Creating {path}', debug,
+                     format)
         try:
             os.makedirs(path)
         except:
-            print_pretty("unable to create dir at " + path, debug)
+            print_pretty(f"Unable to create dir at {path}", debug, format)
             if debug:
                 name = input("Any key to continue")
     else:
+    # if the directory DOES exist, notify that we will be removing and
+    # overwriting it
         if not clear:
-            print_pretty('directory is present. ' + path, debug)
+            print_pretty(f'Directory is present, but we are deleting it anyway! {path}', debug, format)
+            print_pretty('clearing...', debug, format)
         else:
-            print_pretty('directory is present. ' + path)
-            print_pretty('clearing...', debug)
             try:
                 shutil.rmtree(path)
                 os.makedirs(path)
             except:
-                print_pretty("failed to clear directory. " + path)
+                print_pretty(f"failed to clear directory: {path}", debug,
+                             format)
                 if debug:
                     name = input("Any key to continue")
 
-class Datastore(dict):                                             # datastore class object for extensibility
-     def __setitem__(self, key, value):
-        super().__setitem__(key, value)
 
-class Variables(object):                                           # variables class object provides an abstraction for state observation w/ a cache
+def replace_in_file(old: str, new: str, path: str, debug: bool = False,
+                    format="json"):
+    """
+    replaces a string inside target file
+    regex function
+    takes <old_value> <new_value> <path/to/old_value>
+    """
+    print_pretty(old + " --> " + new, debug, format)
+    full_path = path
+    with open(full_path, 'r+') as f:
+        text = f.read()
+        text = re.sub(old, new, text)
+        f.seek(0)
+        f.write(text)
+        f.truncate()
 
-    def __init__(self, settings, debug=False, go_steppy=False):  # reconstrusts the json object as a dict
 
-        self.change_value("debug", debug, debug)
-        self.change_value("go_steppy", go_steppy, debug)
+def quote(text: str):
+    """
+    returns a quoted variable
+    quotes a variable
+    """
+    word = f'"{text}"'
+    return word
 
-        for section in settings:
-            if len(section) == 1:
-                key = section
-                value = settings[section]
-                self.change_value(key, value, debug)
+
+def get_environment_vars(identitfier: str, env_vars: dict, debug=True,
+                         format="json"):
+    """
+    reads and sets environment vars + str to bool conversion
+    all environment variables are just interpreted as strings.
+    this means we have to make sure we convert variables
+    like TRUE, True, true etc.. to booleans when we find them
+    """
+
+    # new set of env vars
+    new_vars = {}
+
+    # for each env var, KEY => key
+    for var in env_vars.keys():
+        try:
+            lower = str(var).lower()
+            name = re.sub(identitfier, "", lower)
+            new_vars[name] = os.getenv(var)
+        except KeyError:
+            print_pretty(f"Please set the environment variable {var}", debug,
+                         format)
+
+    # handle boolean conversion since all env vars are strings
+    for var in new_vars:
+        try:
+            if new_vars[var] in ['True', "true", "yes","Yes"]:
+                new_vars[var] = True
             else:
-                key = section
-                value = {}
-                for item in settings[section]:
-                    value[item] = settings[section][item]
+                if new_vars[var] in ['False', "false", "no","No"]:
+                    new_vars[var] = False
+        except KeyError:
+            print_pretty(f"Please set the environment variable {var}", debug)
 
-                self.change_value(key, value, debug)
+    return new_vars
 
-    def change_value(self, key, value, debug=False):  # changes the value of settings and logs the change using deepdiff
-        diff = self.diff_values(key, value, debug)
-        print_pretty(f"Diff for {key}:", debug)
-        print_pretty(f"{self.get_current_value(key, value)} ==> {value}", debug)
-        print_pretty(diff, debug)
 
-        if "go_steppy" in self.settings:
-            if self.settings['go_steppy']:
-                name = input("Any key to continue")
+class Variables(object):
+    """
+    ephemeral, human readable, stateful, json/yaml memory cache
 
+    based on:
+    stackoverflow.com/questions/2060972/subclassing-python-dictionary-to-override-setitem,
+
+    attemptes to recreate C# getter/setter with an event listener:
+    docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/using-properties
+    https://docs.microsoft.com/en-us/dotnet/standard/events/
+    """
+
+    def __init__(self, settings):
+        """
+        Create a new memory cache
+        """
+        for item in settings:
+            self.change_value(item, settings[item])
+
+
+    def __setattr__(self, key, value):
+        """
+        ########################
+        Event entrypoint
+        custom events go in here
+        ########################
+        """
+
+        ##
+        # Diff Values
+        ##
+        debug = True
+        format = "json"
+        self.diff_values(key, value, debug, format)
+
+        ##
+        # prompt for confirmation
+        ##
+        self.steppy()
+
+        super(Variables, self).__setattr__(key, value)
+
+
+    def change_value(self, key, value):
+        """
+        Changes the value of settings and logs the change using deepdiff
+        alters the behaviro here as this will be the global entry point
+        for manual action
+        """
+        debug = True
+        format = "json"
+        self.diff_values(key, value, debug, format)
         self.settings[key] = value
 
-    def get_current_value(self, key, value, debug=False): # returns the current value of a key
+
+    def get_current_value(self, key, value, debug=False):
+        """
+        Returns the current value of a key. Utility function
+        for diff_values
+        """
         current_value = None
 
-        for section in self.settings:
+        for section in self.__dict__:
             if section == key:
-                current_value = self.settings[section]
+                current_value = self.__dict__[section]
+
             for item in section:
                 if item == key:
-                    current_value = self.settings[section][item]
+                    current_value = self.__dict__[section][item]
 
+        # and finally, return
         return current_value
 
-    def diff_values(self, key, value, debug=False): # returns a diff between current and proposed state
-        #try to find the current value if it exists
-        #opitmization needed
+
+    def diff_values(self, key, value, debug=False, format="json"):
+        """
+        returns a diff between current and proposed state
+        try to find the current value if it exists
+        opitmization needed
+        """
         current_value = self.get_current_value(key, value, debug)
 
         # actually do the diff
         try:
-            data = DeepDiff(current_value, value).to_json(indent='\t', separators=(',', ': '), sort_keys=True, skipkeys=True)
+            diff_data = DeepDiff(current_value, value)
+            data = diff_data.to_json(indent='\t',
+                                     separators=(',', ': '),
+                                     sort_keys=True,
+                                     skipkeys=True)
+
+            # construct the diff message
+            text = f"Change Requested for Value: {key}"
+            print_pretty(text, debug, format)
+            print_pretty(data, debug, format)
+
         except:
-            data = "Unable to diff"
+            text = f"Unable to diff: {current_value}"
+            print_pretty(text, debug, format)
 
-        return data
 
-    @property
-    def settings(self):
-      return (self.__dict__)
+    def steppy(self):
+        """
+        If a settings names "go_steppy" is found in self.settings and is True,
+        execution of tasks will pause upon memory item changes.
+        """
+        if "go_steppy" in self.__dict__:
+            if self.go_steppy:
+                name = input('Any Key to Approve')
 
-    @settings.setter
-    def settings(self, settings):
-        self.settings = settings
