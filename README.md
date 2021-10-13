@@ -3,27 +3,6 @@
 ___
 Data/file manipulation tools to prevent me from having to write out json serilization a million times. Tries to make you code your variables in a a way that can lift-and-shift easily.
 
-## Usage
-
-___
-
-```python
-import io_tools as io # custom lib
-
-debug = True
-go_steppy = False
-working_directory = os.getcwd()
-
-#load the settings file
-settings_file = sys.argv[1]
-settings = io.read_file(settings_file)
-vars = Vars(settings, debug, go_steppy)
-
-#set some env vars
-vars.change_value('working_dir', working_directory, debug)
-
-```
-
 __To Use:__
 
 ```bash
@@ -39,7 +18,8 @@ python3 yaml_to_json_convert.py
 ```
 
 __Examples:__
-```
+
+```python
 #/usr/bin/env Python3
 """
 Demo script to showcase the io_tools library and what it can do for you
