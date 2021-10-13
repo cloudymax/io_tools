@@ -233,20 +233,24 @@ def validate_json_file(path: str, debug=False, format="json"):
     """
     takes a <file_path>, returns query{dict(<string>,<string>)}
     """
+    message = f"json validation requested for : {path} "
+    program_log.debug(message)
+
     query = {}
     query['path'] = path
     if read_file(path, debug) == False:
         query['readable'] = False
     else:
         query['readable'] = True
-        print_pretty("file is valid json :" + path, debug, format)
+        message = f"Validation success : {path} was readable json"
+        program_log.error(message)
 
     return query
 
 
-def validate_json_object(object, debug=False, format="json"):
+def validate_json_object(object):
     """
-    takes a <file_path>, returns query{dict(<string>,<string>)}
+    takes a jsonObject, returns query{dict(<string>,<string>)}
     """
     query = {}
     try:
@@ -261,11 +265,17 @@ def validate_json_object(object, debug=False, format="json"):
                                   separators=(',', ': '),
                                   sort_keys=True,
                                   skipkeys=True)
+
+            message = f"Validation success : {object} was readable json"
+            program_log.debug(message)
+
             query['readable'] = True
             query['path'] = raw_json
         except:
-            # not json :(
-            print_pretty("NOT A VALID JSON OBJECT", debug, format)
+            # nope, not json :(
+            message = f"Validation failure : {object} was not readable json"
+            program_log.error(message)
+
             query['readable'] = False
             if debug:
                 name = input("Any key to continue")
