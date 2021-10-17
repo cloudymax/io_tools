@@ -120,7 +120,8 @@ def read_yaml_file(yaml_file_path):
         #print(json_data)
         
         # Load the clean json into a python dict
-        json_object = json.loads(json_data)
+        json_object = json.loads(f"{json_data}")
+        #print(json_object)
 
     return json_object
 
