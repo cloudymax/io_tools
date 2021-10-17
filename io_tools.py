@@ -95,22 +95,47 @@ def read_file(path: str, debug, format: str = "json"):
             program_log.error(message)
             data = False
 
-    confirmed_data = validate_json_object(data, debug, format)
+    confirmed_data = validate_json_object(data)
     return confirmed_data['path']
 
 
 def read_yaml_file(yaml_file_path):
+    """
+    Reads a .yaml file as raw, converts to json, formats it, then 
+    reloads it as a dict for uniformity of transformation later
+    """
+    
     with open(yaml_file_path, 'r') as f:
-        raw = f.read()
-        yaml_object = yaml.safe_load(raw)
 
-    return yaml_object
+        # reads the files as raw - unusable until loaded
+        raw = f.read()
+        #print(raw)
+
+        # converts the raw data into a json string
+        yaml_object = yaml.safe_load(raw)
+        #print(yaml_object)
+
+        # pretty format the json to make it uniform
+        json_data = json.dumps(yaml_object, indent=4, sort_keys=True)
+        #print(json_data)
+        
+        # Load the clean json into a python dict
+        json_object = json.loads(json_data)
+
+    return json_object
 
 
 def read_json_file(json_file_path):
+    """
+    This function reads a .json file as raw and converts to a json dict via json.loads()
+    """
     with open(json_file_path, 'r', encoding='utf-8') as f:
+
+        # read the file as raw data
         raw = f.read()
-        json_object = json.dumps(raw)
+
+        # convert the json string into a json object
+        json_object = json.loads(raw)
 
     return json_object
 
