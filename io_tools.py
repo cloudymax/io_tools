@@ -2,6 +2,7 @@
 # TODO: cleanup base libs
 import json
 from datetime import datetime
+import logging
 import sys
 from deepdiff import DeepDiff
 from dictor import dictor
@@ -19,6 +20,7 @@ from pygments.lexers import get_lexer_by_name
 from pygments.formatters import (Terminal256Formatter,
                                  HtmlFormatter,
                                  TerminalFormatter)
+import simplejson
 import re
 import shutil
 import time
@@ -28,8 +30,8 @@ from yaml.loader import SafeLoader
 
 # TODO: Logging
 log_level = log.DEBUG
-program_log = log.getLogger("my-logger")
-#program_log.basicConfig(stream=sys.stderr, level=log_level)
+program_log = log.getLogger(f"io_tools")
+log.basicConfig(level=log_level)
 program_log.info("logging config loaded")
 
 
@@ -51,48 +53,43 @@ def get_epoch():
 
     # logging
     ts = get_timestamp()
-    program_log.debug(f"function 'get_epoch' called at {ts}")
+    #program_log.debug(f"function 'get_epoch' called at {ts}")
 
     timestamp = time.time()
 
     return timestamp
 
 
-def read_file(path: str, debug, format: str = "json"):
+def read_file(path: str):
     """
     reads json file from <path>: returns <json object>
     """
 
     # logging
     ts = get_timestamp()
-    program_log.debug(f"function 'read_file' called at {ts}")
+    #program_log.debug(f"function 'read_file' called at {ts}")
 
     # try to read the file
-    message = print_pretty(f"trying to read: {path}", debug, format)
-    program_log.debug(message)
+    #program_log.debug(f"trying to read: {path}")
 
     file_extension = pathlib.Path(path).suffix
 
     if file_extension == ".yaml":
         try:
             data = read_yaml_file(path)
-            message = print_pretty(f"successfully read: {path}", debug, format)
-            program_log.debug(message)
+            #program_log.debug(f"successfully read: {path}")
 
         except Exception:
-            message = print_pretty(f"Failed to read: {path}", True)
-            program_log.error(message)
+            #program_log.error(f"Failed to read: {path}")
             data = False
 
     if file_extension == ".json":
         try:
             data = read_json_file(path)
-            message = print_pretty(f"successfully read: {path}", debug, format)
-            program_log.debug(message)
+            #program_log.debug(f"successfully read: {path}")
 
         except Exception:
-            message = print_pretty(f"Failed to read: {path}", True)
-            program_log.error(message)
+            program_log.error(f"Failed to read: {path}")
             data = False
 
     confirmed_data = validate_json_object(data)
@@ -101,10 +98,10 @@ def read_file(path: str, debug, format: str = "json"):
 
 def read_yaml_file(yaml_file_path):
     """
-    Reads a .yaml file as raw, converts to json, formats it, then 
+    Reads a .yaml file as raw, converts to json, formats it, then
     reloads it as a dict for uniformity of transformation later
     """
-    
+
     with open(yaml_file_path, 'r') as f:
 
         # reads the files as raw - unusable until loaded
@@ -116,9 +113,9 @@ def read_yaml_file(yaml_file_path):
         #print(yaml_object)
 
         # pretty format the json to make it uniform
-        json_data = json.dumps(yaml_object, indent=4, sort_keys=True)
+        json_data = json.dumps(yaml_object, separators=(',', ":"))
         #print(json_data)
-        
+
         # Load the clean json into a python dict
         json_object = json.loads(f"{json_data}")
         #print(json_object)
@@ -135,21 +132,19 @@ def read_json_file(json_file_path):
         # read the file as raw data
         raw = f.read()
 
-        # convert the json string into a json object
+        # convert the raw string into a json object
         json_object = json.loads(raw)
 
     return json_object
 
 
-def json_to_yaml(json_data, debug):
+def json_to_yaml(json_data):
     """
     converts json_data: str into a json object{}
     converts the json object{} into a yaml: str
     """
-    dumped = yaml.safe_dump(json.loads(json_data),
-                            default_style="",
-                            default_flow_style=False)
-    return dumped
+    data = yaml.dump(simplejson.loads(str(json_data)), default_flow_style=False)
+    return data
 
 
 def yaml_to_json(yaml_file):
@@ -160,7 +155,7 @@ def yaml_to_json(yaml_file):
     with open(yaml_file, 'r') as f:
       raw = f.read()
       yaml_object = yaml.safe_load(raw)
-      json_data = json.dumps(yaml_object, indent=4, sort_keys=True)
+      json_data = json.dumps(yaml_object, separators=(',', ":"))
 
     return json_data
 
@@ -174,35 +169,6 @@ def json_to_csv(json_file_path):
         df.to_csv('test.csv', encoding='utf-8', index=False)
 
 
-def print_pretty(data, debug: bool = False, format: str = "json"):
-    """
-    prettified json console output: returns <string>
-    Generate JSON
-    """
-    json_data = {}
-    try:
-        json_data = validate_json_object(data)
-    except:
-        try:
-            json_data = validate_json_file(data)
-        except:
-            if debug:
-                name = input("Any key to continue")
-
-    if json_data['readable'] != False:
-        try:
-            if format == "yaml":
-                raw = json_to_yaml(data, debug)
-                colorize_yaml(raw, debug)
-            else:
-                if format == "json":
-                    colorize_json(json_data['path'], debug)
-        except:
-            print(f"Well shit, i cant parse this: {json_data}")
-            if debug:
-                name = input("Any key to continue")
-
-
 def colorize_json(json_data, debug):
     """
     print colorful json data
@@ -210,7 +176,7 @@ def colorize_json(json_data, debug):
 
     # dump json to a string
     data = json.dumps(json.loads(json_data),
-                        indent=" ",
+                        indent="  ",
                         separators=(',',': '),
                         sort_keys=True,
                         skipkeys=False)
@@ -249,18 +215,14 @@ def colorize_yaml(data, debug):
     if debug == True:
         print(colorful)
     else:
-        log = {}
-        log['time'] = get_timestamp()
-        log['data'] = colorful
-        (log, True)
+        program_log.debug(colorful)
 
 
 def validate_json_file(path: str, debug=False, format="json"):
     """
     takes a <file_path>, returns query{dict(<string>,<string>)}
     """
-    message = f"json validation requested for : {path} "
-    program_log.debug(message)
+    #program_log.debug(f"json validation requested for : {path} ")
 
     query = {}
     query['path'] = path
@@ -268,8 +230,7 @@ def validate_json_file(path: str, debug=False, format="json"):
         query['readable'] = False
     else:
         query['readable'] = True
-        message = f"Validation success : {path} was readable json"
-        program_log.error(message)
+        program_log.error(f"Validation success : {path} was readable json")
 
     return query
 
@@ -284,23 +245,26 @@ def validate_json_object(object):
         is_json = json.loads(object)
         query['readable'] = True
         query['path'] = object
-    except:
+
+    except Exception as e:
+        # nope not already json
+        program_log.error(f"Oof", print(e.__class__), "occurred")
+
         try:
-            # can I make it json?
+        # can I make it json?
             raw_json = json.dumps(object,
                                   separators=(',', ': '),
                                   sort_keys=True,
                                   skipkeys=True)
 
-            message = f"Validation success : {object} was readable json"
-            program_log.debug(message)
-
+            program_log.debug(f"Validation success : {object} was readable json")
             query['readable'] = True
             query['path'] = raw_json
-        except:
-            # nope, not json :(
-            message = f"Validation failure : {object} was not readable json"
-            program_log.error(message)
+
+        except Exception as e:
+        # nope, cant make it json :(
+            program_log.error(f"Oof", print(e.__class__), "occurred")
+            program_log.error(f"Validation failure : {object} was not readable json")
 
             query['readable'] = False
             if debug:
@@ -308,6 +272,36 @@ def validate_json_object(object):
 
     return query
 
+def print_pretty(data, debug=False, format: str = "json"):
+    """
+    prettified json console output: returns <string>
+    Generate JSON
+    """
+    json_data = {}
+
+    # Verify all the data we pass aound is valid json format
+    try:
+        json_data = validate_json_object(data)
+
+    except Exception as e:
+        program_log.error(f"Oof", print(e.__class__), "occurred")
+
+    # once we determine it is readable, pretty print the data
+    if json_data['readable'] != False:
+        try:
+            if format == "yaml":
+            #if YAML formatted
+                yaml_string = json_to_yaml(data)
+                colorize_yaml(yaml_string, debug)
+            else:
+            #if JSON formatted
+                if format == "json":
+                    colorize_json(json_data['path'], debug)
+
+        except Exception:
+            print(f"Unable to parse data: {json_data}")
+            if debug:
+                name = input("Any key to continue")
 
 def write_file(path: str, payload: str, debug = False, format="json"):
     """
@@ -317,38 +311,35 @@ def write_file(path: str, payload: str, debug = False, format="json"):
     # if not, create it. return an error if we fail
     if not os.path.isfile(path):
         try:
-            print_pretty(f"trying to write file: {path}", debug, format)
+            program_log.log(f"trying to write file: {path}", debug, format)
             text = dictor(payload, pretty=True)
             with open(path, "w") as save_file:
                 save_file.write(text)
-        except:
-            print_pretty(f"failed to save: {path}", debug, format)
+        except Exception as e:
+            program_log.error(f"Oof", print(e.__class__), "occurred")
+            program_log.error(f"failed to save: {path}", debug, format)
             if debug:
                name = input("Any key to continue")
     else:
     # if the file DOES exist, pop up a warning that I'm about to delete it.
         try:
-            # this creates a long string of 80 #'s to break up text
-            divider = "#".center(79,"#")
 
-            # warn the user
-            print_pretty(divider, debug, format)
-            print_pretty(f"# file already exists: {path}", debug, format)
+            program_log.error(f"# file already exists: {path}", debug, format)
 
             desc = ("# if you dont want to delete the contents of the " +
                     "file on write, use the update_file() function")
-            print_pretty(desc, debug, format)
+            program_log.error(f"{desc}")
 
-            print_pretty(f"# clearing file... {path}", debug, format)
-            print_pretty(divider, debug, format)
+            program_log.error(f"# clearing file... {path}")
 
             # actually delete the file
             os.remove(path)
 
             # now try the whole loop again
             write_file(path, payload, debug)
-        except:
-            print_pretty(f"failed to save: {path}", debug, format)
+        except Exception as e:
+            program_log.error(f"Oof", print(e.__class__), "occurred")
+            program_log.error(f"failed to save: {path}")
             if debug:
                 name = input("Any key to continue")
 
@@ -364,8 +355,9 @@ def update_file(path: str, payload: str, debug = False, format="json"):
         with open(path, "a") as save_file:
             save_file.write(payload)
             save_file.close()
-    except:
-        print_pretty("failed to update: " + path, debug, format)
+    except Exception as e:
+        program_log.error(f"Oof", print(e.__class__), "occurred")
+        program_log.error(f"failed to update: {path}")
 
 
 def make_dir(path: str, clear: bool = False, debug: bool = False,
@@ -375,27 +367,27 @@ def make_dir(path: str, clear: bool = False, debug: bool = False,
     """
     # if the directory does not exist, try to create it
     if not os.path.isdir(path):
-        print_pretty(f'Directory is not present. Creating {path}', debug,
-                     format)
+        #program_log.debug(f'Directory is not present. Creating {path}')
         try:
             os.makedirs(path)
-        except:
-            print_pretty(f"Unable to create dir at {path}", debug, format)
+        except Exception as e:
+            program_log.error(f"Oof", print(e.__class__), "occurred")
+            program_log.error(f"Unable to create dir at {path}")
             if debug:
                 name = input("Any key to continue")
     else:
     # if the directory DOES exist, notify that we will be removing and
     # overwriting it
         if not clear:
-            print_pretty(f'Directory is present, but we are deleting it anyway! {path}', debug, format)
-            print_pretty('clearing...', debug, format)
+            program_log.info(f'Directory is present, but we are deleting it anyway! {path}')
+            program_log.info('clearing...')
         else:
             try:
                 shutil.rmtree(path)
                 os.makedirs(path)
-            except:
-                print_pretty(f"failed to clear directory: {path}", debug,
-                             format)
+            except Exception as e:
+                program_log.error(f"Oof", print(e.__class__), "occurred")
+                program_log.error(f"failed to clear directory: {path}")
                 if debug:
                     name = input("Any key to continue")
 
@@ -407,7 +399,7 @@ def replace_in_file(old: str, new: str, path: str, debug: bool = False,
     regex function
     takes <old_value> <new_value> <path/to/old_value>
     """
-    print_pretty(old + " --> " + new, debug, format)
+    program_log.info(f"{old} --> {new}")
     full_path = path
     with open(full_path, 'r+') as f:
         text = f.read()
@@ -495,6 +487,7 @@ class Variables(object):
         ##
         debug = True
         format = "json"
+        program_log.info(f"Requesting value change on key: {key}")
         self.diff_values(key, value, debug, format)
 
         ##
@@ -545,21 +538,25 @@ class Variables(object):
         current_value = self.get_current_value(key, value, debug)
 
         # actually do the diff
+        diff_data = ""
+
         try:
-            diff_data = DeepDiff(current_value, value)
-            data = diff_data.to_json(indent='\t',
-                                     separators=(',', ': '),
-                                     sort_keys=True,
-                                     skipkeys=True)
+            diff_data = DeepDiff(current_value, value, report_repetition=True, verbose_level=2, )
+        except Exception:
+            program_log.error(f"Unable to diff value: {current_value}")
 
-            # construct the diff message
-            text = f"Change Requested for Value: {key}"
-            print_pretty(text, debug, format)
-            print_pretty(data, debug, format)
+        # generate the diff report
+        data_string = (json.loads(diff_data.to_json()))
 
-        except:
-            text = f"Unable to diff: {current_value}"
-            print_pretty(text, debug, format)
+        # clean up the nested values
+        diff_results =  {
+            'old_type': f"{data_string['type_changes']['root']['old_type']}",
+            'old_value':  f"{data_string['type_changes']['root']['old_value']}",
+            'new_type': f"{data_string['type_changes']['root']['new_type']}",
+            'new_value': print_pretty(f"{data_string['type_changes']['root']['new_value']}", debug, format)
+        }
+
+        #program_log.debug(print_pretty(data_string['type_changes']['root'], debug, format))
 
 
     def steppy(self):
