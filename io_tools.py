@@ -1,4 +1,4 @@
-#/usr/bin/python3
+#/usr/bin/env python3
 # TODO: cleanup base libs
 import json
 from datetime import datetime
