@@ -40,8 +40,7 @@ def get_timestamp():
     """
 
     now = datetime.now()
-    timestamp = now.strftime("%d-%b-%Y (%H:%M:%S.%f)")
-    return timestamp
+    return now.strftime("%d-%b-%Y (%H:%M:%S.%f)")
 
 
 def get_epoch():
@@ -53,9 +52,7 @@ def get_epoch():
     ts = get_timestamp()
     program_log.debug(f"function 'get_epoch' called at {ts}")
 
-    timestamp = time.time()
-
-    return timestamp
+    return time.time()
 
 
 def read_file(path: str, debug, format: str = "json"):
@@ -146,10 +143,9 @@ def json_to_yaml(json_data, debug):
     converts json_data: str into a json object{}
     converts the json object{} into a yaml: str
     """
-    dumped = yaml.safe_dump(json.loads(json_data),
+    return yaml.safe_dump(json.loads(json_data),
                             default_style="",
                             default_flow_style=False)
-    return dumped
 
 
 def yaml_to_json(yaml_file):
@@ -191,12 +187,11 @@ def print_pretty(data, debug: bool = False, format: str = "json"):
 
     if json_data['readable'] != False:
         try:
-            if format == "yaml":
+            if format == "json":
+                colorize_json(json_data['path'], debug)
+            elif format == "yaml":
                 raw = json_to_yaml(data, debug)
                 colorize_yaml(raw, debug)
-            else:
-                if format == "json":
-                    colorize_json(json_data['path'], debug)
         except:
             print(f"Well shit, i cant parse this: {json_data}")
             if debug:
@@ -227,8 +222,7 @@ def colorize_json(json_data, debug):
     if debug == True:
         print(colorful)
     else:
-        log = {}
-        log['time'] = get_timestamp()
+        log = {'time': get_timestamp()}
         log['data'] = colorful
         (log, True)
 
@@ -249,8 +243,7 @@ def colorize_yaml(data, debug):
     if debug == True:
         print(colorful)
     else:
-        log = {}
-        log['time'] = get_timestamp()
+        log = {'time': get_timestamp()}
         log['data'] = colorful
         (log, True)
 
@@ -262,8 +255,7 @@ def validate_json_file(path: str, debug=False, format="json"):
     message = f"json validation requested for : {path} "
     program_log.debug(message)
 
-    query = {}
-    query['path'] = path
+    query = {'path': path}
     if read_file(path, debug) == False:
         query['readable'] = False
     else:
@@ -383,21 +375,18 @@ def make_dir(path: str, clear: bool = False, debug: bool = False,
             print_pretty(f"Unable to create dir at {path}", debug, format)
             if debug:
                 name = input("Any key to continue")
+    elif not clear:
+        print_pretty(f'Directory is present, but we are deleting it anyway! {path}', debug, format)
+        print_pretty('clearing...', debug, format)
     else:
-    # if the directory DOES exist, notify that we will be removing and
-    # overwriting it
-        if not clear:
-            print_pretty(f'Directory is present, but we are deleting it anyway! {path}', debug, format)
-            print_pretty('clearing...', debug, format)
-        else:
-            try:
-                shutil.rmtree(path)
-                os.makedirs(path)
-            except:
-                print_pretty(f"failed to clear directory: {path}", debug,
-                             format)
-                if debug:
-                    name = input("Any key to continue")
+        try:
+            shutil.rmtree(path)
+            os.makedirs(path)
+        except:
+            print_pretty(f"failed to clear directory: {path}", debug,
+                         format)
+            if debug:
+                name = input("Any key to continue")
 
 
 def replace_in_file(old: str, new: str, path: str, debug: bool = False,
@@ -422,8 +411,7 @@ def quote(text: str):
     returns a quoted variable
     quotes a variable
     """
-    word = f'"{text}"'
-    return word
+    return f'"{text}"'
 
 
 def get_environment_vars(identitfier: str, env_vars: dict, debug=True,
@@ -439,7 +427,7 @@ def get_environment_vars(identitfier: str, env_vars: dict, debug=True,
     new_vars = {}
 
     # for each env var, KEY => key
-    for var in env_vars.keys():
+    for var in env_vars:
         try:
             lower = str(var).lower()
             name = re.sub(identitfier, "", lower)
@@ -449,13 +437,12 @@ def get_environment_vars(identitfier: str, env_vars: dict, debug=True,
                          format)
 
     # handle boolean conversion since all env vars are strings
-    for var in new_vars:
+    for var, value in new_vars.items():
         try:
             if new_vars[var] in ['True', "true", "yes","Yes"]:
                 new_vars[var] = True
-            else:
-                if new_vars[var] in ['False', "false", "no","No"]:
-                    new_vars[var] = False
+            elif value in ['False', "false", "no", "No"]:
+                new_vars[var] = False
         except KeyError:
             print_pretty(f"Please set the environment variable {var}", debug)
 
@@ -567,7 +554,6 @@ class Variables(object):
         If a settings names "go_steppy" is found in self.settings and is True,
         execution of tasks will pause upon memory item changes.
         """
-        if "go_steppy" in self.__dict__:
-            if self.go_steppy:
-                name = input('Any Key to Approve')
+        if "go_steppy" in self.__dict__ and self.go_steppy:
+            name = input('Any Key to Approve')
 
