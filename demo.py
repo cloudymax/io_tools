@@ -1,8 +1,7 @@
-#/usr/bin/env Python3
+#/usr/bin/env python3
 """
 Demo script to showcase the io_tools library and what it can do for you
 """
-
 import io_tools as io
 import sys
 from pygments.styles import get_all_styles
@@ -23,7 +22,7 @@ vars.text_format = "yaml"
 vars.debug = True
 
 # Pretty print the cache
-io.print_pretty(f"{vars.go_steppy}", vars.debug, vars.text_format)
+io.print_pretty(print(vars.go_steppy), vars.debug, vars.text_format)
 
 # instect the cache size
 #print(f"{sys.getsizeof(vars)} bytes")
