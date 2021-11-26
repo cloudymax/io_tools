@@ -1,7 +1,8 @@
-#/usr/bin/env python3
+#/usr/bin/env Python3
 """
 Demo script to showcase the io_tools library and what it can do for you
 """
+
 import io_tools as io
 import sys
 from pygments.styles import get_all_styles
@@ -18,20 +19,20 @@ vars = io.Variables(settings)
 
 # Now assign some values
 vars.go_steppy = True
-vars.text_format = "yaml"
+vars.text_format = "json"
 vars.debug = True
 
 # Pretty print the cache
-io.print_pretty(print(vars.go_steppy), vars.debug, vars.text_format)
+io.print_pretty(f"{vars.go_steppy}", vars.debug, vars.text_format)
 
 # instect the cache size
-#print(f"{sys.getsizeof(vars)} bytes")
+print(f"{sys.getsizeof(vars)} bytes")
 
 #print(vars)
-#print(vars.__dict__)
+print(vars.__dict__)
 
 # save the cache to a file
-#io.write_file('cache.json', print(vars.__dict__), vars.debug)
+io.write_file('cache.json', f"{print(vars.__dict__)}", vars.debug)
 
 # delete
 #del vars
@@ -43,6 +44,7 @@ io.print_pretty(print(vars.go_steppy), vars.debug, vars.text_format)
 
 # we can change the format of the output by passing the
 # "format=''" flag to the io.print_pretty class
+# WIP
 #io.print_pretty(vars, True, "yaml")
 
 
@@ -55,4 +57,4 @@ io.print_pretty(print(vars.go_steppy), vars.debug, vars.text_format)
 # io_tools translates boring data into human readable output
 # it supports the use of multiple styles.
 # lets make a list of all the styles:
-styles = list(get_all_styles())
+#styles = list(get_all_styles())
