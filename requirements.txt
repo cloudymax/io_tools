@@ -122,7 +122,7 @@ ssh-import-id==5.10
 systemd-python==234
 tinycss2==1.1.1
 tornado==5.1.1
-Twisted==18.9.0
+Twisted==20.3.0
 ubuntu-advantage-tools==27.4
 ubuntu-drivers-common==0.0.0
 ufw==0.36
