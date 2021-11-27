@@ -23,16 +23,13 @@ vars.text_format = "json"
 vars.debug = True
 
 # Pretty print the cache
-io.print_pretty(f"{vars.go_steppy}", vars.debug, vars.text_format)
+io.print_pretty(vars.__dict__, vars.debug, vars.text_format)
 
-# instect the cache size
+# inspect the cache size
 print(f"{sys.getsizeof(vars)} bytes")
 
-#print(vars)
-print(vars.__dict__)
-
 # save the cache to a file
-io.write_file('cache.json', f"{print(vars.__dict__)}", vars.debug)
+io.write_file('cache.json', vars.__dict__, vars.debug)
 
 # delete
 #del vars

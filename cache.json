@@ -1,1 +1,5 @@
-"None"
+{
+    "debug": true,
+    "go_steppy": true,
+    "text_format": "json"
+}

@@ -10,9 +10,14 @@ ___
 ```python
 import io_tools as io # custom lib
 
-debug = True
-go_steppy = False
-working_directory = os.getcwd()
+settings = {}
+vars = io.Variables(settings)
+vars.go_steppy = True
+vars.text_format = "json"
+vars.debug = True
+
+io.print_pretty(vars, vars.debug, vars.text_format)
+io.write_file('cache.json', f"{print(vars.__dict__)}", vars.debug)
 
 #load the settings file
 settings_file = sys.argv[1]
