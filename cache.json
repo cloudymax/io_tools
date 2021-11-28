@@ -1,5 +1,20 @@
 {
     "debug": true,
-    "go_steppy": true,
-    "text_format": "json"
+    "go_steppy": false,
+    "json_file_contents": {
+        "debug": true,
+        "go_steppy": true,
+        "text_format": "json"
+    },
+    "json_input_file": "cache.json",
+    "yaml_file_contents": {
+        "Settings": [
+            {
+                "Description": "test data",
+                "Name": "some name",
+                "Value": 1010101
+            }
+        ]
+    },
+    "yaml_input_file": "pref_input_test.yaml"
 }

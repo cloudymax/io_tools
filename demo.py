@@ -28,12 +28,14 @@ io.print_pretty(vars.__dict__, vars.debug, vars.text_format)
 # inspect the cache size
 print(f"{sys.getsizeof(vars)} bytes")
 
-# save the cache to a file
+# save the cache to a file (serialize)
 io.write_file('cache.json', vars.__dict__, vars.debug)
 
 # delete
-#del vars
+del vars
 
+# load from file (deserialize)
+settings = io.read_file('cache.json', True)
 
 # you will see on your terminal that each time a value in the memory
 # object is updated, we are notified of the change with
@@ -41,8 +43,7 @@ io.write_file('cache.json', vars.__dict__, vars.debug)
 
 # we can change the format of the output by passing the
 # "format=''" flag to the io.print_pretty class
-# WIP
-#io.print_pretty(vars, True, "yaml")
+io.print_pretty(settings, True, "yaml")
 
 
 # show off some features

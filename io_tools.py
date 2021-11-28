@@ -110,7 +110,7 @@ def read_yaml_file(yaml_file_path):
 def read_json_file(json_file_path):
     with open(json_file_path, 'r', encoding='utf-8') as f:
         raw = f.read()
-        json_object = json.dumps(raw)
+        json_object = json.loads(raw)
 
     return json_object
 

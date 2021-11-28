@@ -5,78 +5,59 @@ Data/file manipulation tools to prevent me from having to write out json seriliz
 
 ## Usage
 
+- See demo.py for serialization, de-serialization, and format conversion examples.
 ___
 
-```python
-import io_tools as io # custom lib
 
-settings = {}
-vars = io.Variables(settings)
-vars.go_steppy = True
-vars.text_format = "json"
-vars.debug = True
-
-io.print_pretty(vars, vars.debug, vars.text_format)
-io.write_file('cache.json', f"{print(vars.__dict__)}", vars.debug)
-
-#load the settings file
-settings_file = sys.argv[1]
-settings = io.read_file(settings_file)
-vars = Vars(settings, debug, go_steppy)
-
-#set some env vars
-vars.change_value('working_dir', working_directory, debug)
-
-```
-
-__To Use:__
+__To Run the demo:__
 
 ```bash
 # cd to the program folder
-cd data_transformation
+cd some_project
 
 # install dependancies
 pip3 install -r requirements.txt
 
 # run the script
-python3 yaml_to_json_convert.py
+python3 demo.py
 
 ```
 
-__Examples:__
+__Step by step in:__
+
+```zsh
+python3
+```
 
 ```python
 
-import data_transformation as io
+import io_tools as io
 import json
 
-debug = True
-go_steppy = False
-input_file = "pref_input_test.yaml"
+settings = {}
+vars = io.Variables(settings)
+vars.debug = True
+vars.go_steppy = False
+vars.yaml_input_file = "pref_input_test.yaml"
+vars.json_input_file = "cache.json"
 
-# reads a yaml file
-settings = io.read_file(input_file, debug)
+# reads a file of TYPE
+vars.yaml_file_contents = io.read_yaml_file(vars.yaml_input_file)
+vars.json_file_contents = io.read_json_file(vars.json_input_file)
 
 # print as pretty json
-io.print_pretty(settings, debug, "json")
+io.print_pretty(vars.json_file_contents, vars.debug, "json")
+io.print_pretty(vars.yaml_file_contents, vars.debug, "json")
 
-#print as compact json
-print(settings)
+# print as compact json
+print(vars.__dict__)
 
-# print as yaml
-io.print_pretty(settings, debug, "yaml")
+# Serialize
+json_string = print(vars.__dict__) 
+io.write_file('cache.json', vars.__dict__, vars.debug)
 
-# stringify
-vars = io.Variables(settings, debug, go_steppy)
-
-# print
-io.print_pretty(settings, debug, "yaml")
-io.print_pretty(settings, debug, "json")
-print(vars.work[0]['name'])
-
-# convert to csv
-io.write_file("test.json", vars.__dict__, debug, "json")
-io.json_to_csv("test.json", debug)
+# Can write CSVs as well, but only working properly on non-nested files. WIP.
+csv = io.json_to_csv('cache.json')
 ```
 
 ## Class Methods
