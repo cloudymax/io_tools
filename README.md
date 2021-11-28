@@ -1,7 +1,7 @@
 # I/O Tools
 
 ___
-Data/file manipulation tools to prevent me from having to write out json serilization a million times. Tries to make you code your variables in a a way that can lift-and-shift easily.
+Data/file manipulation tools to prevent me from having to write out json serialization a million times. Tries to make you code your variables in a a way that can shift now and easily to be lifted later. Best used as a submodule and then replaced with an ORM, Memory Cache, or NoSQL DB when you have one. might push to pypy or snap at some point.
 
 ## Usage
 
@@ -13,9 +13,9 @@ __To Run the demo:__
 
 ```bash
 # cd to the program folder
-cd some_project
+cd io_tools
 
-# install dependancies
+# install dependencies
 pip3 install -r requirements.txt
 
 # run the script
