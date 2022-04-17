@@ -1,7 +1,9 @@
-# I/O Tools
+# ORM-Events
 
 ___
-Data/file manipulation tools to prevent me from having to write out json serialization a million times. Tries to make you code your variables in a a way that can shift now and easily to be lifted later. Best used as a submodule and then replaced with an ORM, Memory Cache, or NoSQL DB when you have one. might push to pypy or snap at some point.
+Attemptes to recreate C# getter/setter wich will generate events
+docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/using-properties
+https://docs.microsoft.com/en-us/dotnet/standard/events/
 
 ## Usage
 
